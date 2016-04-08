@@ -45,7 +45,7 @@ def main():
     path = getPath()
     path = path + '/yelp_academic_dataset_business.json'
     getData(path)
-    with open('My_Business_Collection.json', 'w') as f:
+    with open('My_Business_Collection_Restaurants.json', 'w') as f:
 	json.dump(ID_COLLECTION, f)
 
 if __name__ == '__main__':

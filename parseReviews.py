@@ -29,8 +29,8 @@ def getData(docs):
         while True:
             obj, remaining = grabJSON(s)
             if obj['business_id'] in RESTAURANTS:
-                PANKAJ[obj['business_id']] = PANKAJ.get(obj['business_id'], 0) + 1
                 fhand.write(str(obj))
+                fhand.write('\n')
 
             s = remaining
             if not remaining.strip():
@@ -39,8 +39,6 @@ def getData(docs):
         f.close()
 
     fhand.close()
-    for key, value in PANKAJ.items():
-        print key, value
 
 def getPath():
     if len(sys.argv) == 1:

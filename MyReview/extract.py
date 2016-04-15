@@ -27,17 +27,6 @@ selectedFiles = {
 'k8JnZBspVOI8kLcQek-Chw.json':None,
 }
 
-#if i > 3: break
-#            i += 1
-#            review = re.findall('''\'text\': \"(.*)\"''', line)
-#            rating = re.findall('''\'stars\': (.)''', line)
-#            print line
-#            print review
-#            print rating
-#            print i
-#            #data = review + ' ##### ' + rating + '\n'
-#            #output.write(data)
-
 docs      = glob.glob('*.json')
 outputDir = 'HindiTranslation/'
 
@@ -54,9 +43,7 @@ for doc in docs:
         outFile = outputDir + restaurantName + '.txt'
         fhand   = open(inFile, 'r')
         output  = open(outFile, 'w')
-        i = 1
         for line in fhand:
-            if i > 2: break
             data = json.dumps(line)
             review = data[data.find("'text':")+9: data.find("'business_id':")-2]
             rating = data[data.find("'stars':")+8:data.find("'date':")-2]

@@ -24,9 +24,9 @@ def getStopWords():
 def clean_text(text):
     ''' Doing what string.translate should do '''  
     text=text.replace(u"।", '')
-    text=text.replace(u'\\ ','')
-    text=text.replace(u'! ','')
-    text=text.replace(u'@ ','')
+    text=text.replace(u'\\','')
+    text=text.replace(u'!','')
+    text=text.replace(u'@','')
     text=text.replace(u',','')
     text=text.replace(u'"','')
     text=text.replace(u'(','')

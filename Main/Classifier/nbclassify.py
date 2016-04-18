@@ -5,6 +5,7 @@ import sys
 import json
 import os
 import glob
+import copy
 
 stopWords = dict()
 
@@ -25,9 +26,9 @@ def getStopWords():
 def clean_text(text):
     ''' Doing what string.translate should do '''  
     text=text.replace(u"।", '')
-    text=text.replace(u'\\ ','')
-    text=text.replace(u'! ','')
-    text=text.replace(u'@ ','')
+    text=text.replace(u'\\','')
+    text=text.replace(u'!','')
+    text=text.replace(u'@','')
     text=text.replace(u',','')
     text=text.replace(u'"','')
     text=text.replace(u'(','')
@@ -62,6 +63,8 @@ def applyMultinomialNB(path):
     # Reading one line at a time from inHandle
     for line in inHand:
         line = line.decode('utf-8').strip()
+        oldLine = copy.copy(line)
+        oldLine = oldLine.split('#####')[0]
         line = clean_text(line)
         line = line.split('#####')
         review = line[0]
@@ -91,7 +94,9 @@ def applyMultinomialNB(path):
         outFile = path + aspect + '/' + maxKey + '.txt'
         # File handle corresponding to this file.
         fhand = out[outFile]
-        fhand.write(review)
+        #review = ' '.join(review)
+        fhand.write(oldLine)
+        fhand.write('\n')
 
     # Closing all the open files.
     inHand.close()

@@ -44,7 +44,7 @@ def clean_text(text):
 
 # Beginning of Application    
 def applyMultinomialNB(path):
-    aspects = ['Food', 'Service', 'Value', 'Ambience']
+    aspects = ['Food', 'Service', 'Ambience']
     sentiments = ['Positive', 'Negative']
     # One directory have one file. So this is fine.
     fname = glob.glob(path + '*.txt')[0]

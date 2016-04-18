@@ -3,7 +3,8 @@
 import math
 import sys
 import json
-import string
+import os
+import glob
 
 stopWords = dict()
 
@@ -41,12 +42,30 @@ def clean_text(text):
 # End of clean text
 
 # Beginning of Application    
-def applyMultinomialNB(inHand, outHand):
+def applyMultinomialNB(path):
+    aspects = ['Food', 'Service', 'Value', 'Ambience']
+    sentiments = ['Positive', 'Negative']
+    # One directory have one file. So this is fine.
+    fname = glob.glob(path + '*.txt')[0]
+    # Open restaurant file for reading.
+    inHand = open(fname, 'r')
+    out    = dict()
+    # directories and files.
+    for aspect in aspects:
+        dirpath = path + aspect
+        os.makedirs(dirpath)
+        for sentiment in sentiments:
+            filepath = dirpath + '/' + sentiment + '.txt'
+            fhand    = open(filepath, 'w')
+            out[filepath] = fhand
+
     # Reading one line at a time from inHandle
-    for review in inHand:
-        review = review.decode('utf-8').strip()
-        review   = clean_text(review)
-        print review
+    for line in inHand:
+        line = line.decode('utf-8').strip()
+        line = clean_text(line)
+        line = line.split('#####')
+        review = line[0]
+        aspect = line[1]
         review   = review.split()
         review   = [x for x in review if not x in stopWords]
         score    = dict()
@@ -67,15 +86,22 @@ def applyMultinomialNB(inHand, outHand):
             if maxValue == None or value > maxValue:
                 maxKey = key
                 maxValue = value
-        # End of computing class.
         # Copy this result into output file.
-        print maxKey
+        # name of the output file = path + aspect + maxKey
+        outFile = path + aspect + '/' + maxKey + '.txt'
+        # File handle corresponding to this file.
+        fhand = out[outFile]
+        fhand.write(review)
+
+    # Closing all the open files.
+    inHand.close()
+    for fname in out:
+        fhand = out[fname]
+        fhand.close()
+
 #End of Application 
        
-testFile = sys.argv[1]
-fname = 'nboutput.txt'
-inHandle  = open(testFile, 'r')
-outHandle = open(fname, 'w')
+path = sys.argv[1]
 # Load StopWords into memory
 getStopWords()
 # Load learnt model into memory
@@ -85,4 +111,4 @@ for key in database:
     for word in database[key][1]:
         print word, database[key][1][word]
 '''
-applyMultinomialNB(inHandle, outHandle)
+applyMultinomialNB(path)

@@ -1,82 +1,131 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import sys
-import os
-import string
 import json
-import glob
+
 if len(sys.argv) != 2: exit(0)
-stopWords = { "a": None, "about": None, "above": None, "after": None, "again": None, "against": None, "all": None, "am": None, "an": None, "and": None, "any": None, "are": None, "aren't": None, "as": None, "at": None, "be": None, "because": None, "been": None, "before": None, "being": None, "below": None, "between": None, "both": None, "but": None, "by": None, "can't": None, "cannot": None, "could": None, "couldn't": None, "did": None, "didn't": None, "do": None, "does": None, "doesn't": None, "doing": None, "don't": None, "down": None, "during": None, "each": None, "few": None, "for": None, "from": None, "further": None, "had": None, "hadn't": None, "has": None, "hasn't": None, "have": None, "haven't": None, "having": None, "he": None, "he'd": None, "he'll": None, "he's": None, "her": None, "here": None, "here's": None, "hers": None, "herself": None, "him": None, "himself": None, "his": None, "how": None, "how's": None, "i": None, "i'd": None, "i'll": None, "i'm": None, "i've": None, "if": None, "in": None, "into": None, "is": None, "isn't": None, "it": None, "it's": None, "its": None, "itself": None, "let's": None, "me": None, "more": None, "most": None, "mustn't": None, "my": None, "myself": None, "no": None, "nor": None, "not": None, "of": None, "off": None, "on": None, "once": None, "only": None, "or": None, "other": None, "ought": None, "our": None, "ours": None, "ourselves": None, "out": None, "over": None, "own": None, "same": None, "shan't": None, "she": None, "she'd": None, "she'll": None, "she's": None, "should": None, "shouldn't": None, "so": None, "some": None, "such": None, "than": None, "that": None, "that's": None, "the": None, "their": None, "theirs": None, "them": None, "themselves": None, "then": None, "there": None, "there's": None, "these": None, "they": None, "they'd": None, "they'll": None, "they're": None, "they've": None, "this": None, "those": None, "through": None, "to": None, "too": None, "under": None, "until": None, "up": None, "very": None, "was": None, "wasn't": None, "we": None, "we'd": None, "we'll": None, "we're": None, "we've": None, "were": None, "weren't": None, "what": None, "what's": None, "when": None, "when's": None, "where": None, "where's": None, "which": None, "while": None, "who": None, "who's": None, "whom": None, "why": None, "why's": None, "with": None, "won't": None, "would": None, "wouldn't": None, "you": None, "you'd": None, "you'll": None, "you're": None, "you've": None, "your": None, "yours": None, "yourself": None, "yourselves":None}
+stopWords = dict()
 
-def getPaths(path):
-    CLASS = list()
-    c = [os.path.join(path, x) for x in os.listdir(path)
-            if os.path.isdir(path + '/' + x)]
-    for i in range(len(c)):
-        for x in [os.path.join(c[i], x) for x in os.listdir(c[i])
-                if os.path.isdir(c[i]+'/' + x)]:
-            CLASS.append(x)
-    return CLASS
+# Beginning of getStopWords
+def getStopWords():
+    ''' Read stopwords from stopWords.txt in current directory.
+        It creates a dictionary for faster reading.
+    '''
+    fname = 'stopWords.txt'
+    fhand = open(fname, 'r')
+    for word in fhand:
+        word = word.decode('utf-8')
+        word = word.strip()
+        stopWords[word] = None
+# End of getStopWords
+        
+# Beginning of clean_text
+def clean_text(text):
+    ''' Doing what string.translate should do '''  
+    text=text.replace(u"।", '')
+    text=text.replace(u'\\ ','')
+    text=text.replace(u'! ','')
+    text=text.replace(u'@ ','')
+    text=text.replace(u',','')
+    text=text.replace(u'"','')
+    text=text.replace(u'(','')
+    text=text.replace(u')','')
+    text=text.replace(u'"','')
+    text=text.replace(u"'",'')
+    text=text.replace(u"‘‘",'')
+    text=text.replace(u"’’",'')
+    text=text.replace(u"''",'')
+    text=text.replace(u".",'')
+    return text
+# End of clean text
 
-def labelMe(data):
-    if 'positive' in data.lower() and 'truthful' in data.lower():
-        return 'PT'
-    if 'positive' in data.lower() and 'deceptive' in data.lower():
-        return 'PD'
-    if 'negative' in data.lower() and 'truthful' in data.lower():
-        return 'NT'
-    if 'negative' in data.lower() and 'deceptive' in data.lower():
-        return 'ND'
-
-def extractVocab(paths):
-    V = dict()
-    N = 0
+# Beginning of extract Vocab
+def extractVocab(fname):
+    ''' Dictionary of all the words in the history.'''  
+    V  = dict()
+    N  = 0
     NC = dict()
-    for path in paths:
-        docs = glob.glob(path + '/*/*.txt')
-        label = labelMe(path)
-        NC[label] = len(docs)
-        N = N + NC[label]
-
-        for doc in docs:
-            with open(doc, 'r') as f:
-                data = f.read().strip().translate(None, string.punctuation)
-                data = data.translate(None, '0123456789')
-                data = data.lower().split()
-                data = [x for x in data if not x in stopWords]
-                for text in data:
-                    V[text] = V.get(text, 0)
+    rating = None
+    fhand = open(fname, 'r')
+    # We are reading from one line here.
+    for line in fhand:
+        line   = line.decode('utf-8').strip()
+        # We are only going to have one match which is expected to be integer.
+        line   = line.split('#####')
+        rating = int(line[1])
+        review = line[0]
+        review   = clean_text(review)
+        review   = review.split()
+        review   = [x for x in review if not x in stopWords]
+        for word in review:
+            V[word] = V.get(word, 0)
+        if rating > 3:
+            label = 'Positive'
+        else:
+            label = 'Negative'
+        # Will help find total number of reviews for this class.
+        NC[label] = NC.get(label, 0) + 1
+    # End of for loop
+    fhand.close()
+    # Total of all reviews.
+    N = sum(NC.values())
     return V, N, NC
+# End of extractVocab
 
-def countTokenInClass(textC, path):
-        result = 0
-        docs = glob.glob(path + '/*/*.txt')
-        for doc in docs:
-            with open(doc, 'r') as f:
-                data = f.read().strip().translate(None, string.punctuation)
-                data = data.translate(None, '0123456789')
-                data = data.lower().split()
-                data = [x for x in data if not x in stopWords]
-                for text in data:
-                    result += 1
-                    textC[text] = textC.get(text, 0) + 1
-        return result
+# Beginning of counting frequency
+def countTokenInClass(textC, path, category = 'Positive'):
+    '''Frequency of words calculation for given class '''
+    result = 0
+    fhand = open(fname, 'r')
+    # We are reading from one line here.
+    for line in fhand:
+        line   = line.decode('utf-8').strip()
+        line   = line.split('#####')
+        rating = int(line[1])
+        if category == 'Positive' and rating < 4:
+            continue
+        if category == 'Negative' and rating > 3:
+            continue
+        review = line[0]
+        review   = clean_text(review)
+        review   = review.split()
+        review   = [x for x in review if not x in stopWords]
+        for text in review:
+            result += 1
+            textC[text] = textC.get(text, 0) + 1
+    # End of reading file
+    fhand.close()
+    return result
+# End of counting frequency
 
-def train(paths):
-    V, N, NC = extractVocab(paths)
-    for path in paths:
-        label = labelMe(path)
+# Beginning of Traning
+def train(path):
+    ''' Traning Bayes model. Main function '''
+    V, N, NC = extractVocab(path)
+    for label in ['Positive', 'Negative']:
+        # Prior of label
         prior = float(NC[label]) / N
-        # Concatenate text of all docs from all classes in string
         textC = V.copy()
-        # Count token of terms
-        # Tct = Tokens that belong to this class
-        Tct = countTokenInClass(textC, path)
+        # List of all tokens in label class and their frequency
+        Tct   = countTokenInClass(textC, path, label)
+        # Probability Calculation and Smoothing
         for text in textC:
-            textC[text] = float(textC[text] + 1)/(Tct + len(V))
-        #Update into the final database
+            textC[text] = float(textC[text] + 1) / (Tct + len(V))
+        # Updating the result into final database
         database[label] = (prior, textC)
+    '''
+    for key in database:
+        for word in database[key][1]:
+            print word, database[key][1][word]
+    '''
+# End of Training
 
-database = {'PT' : {}, 'PD' : {}, 'NT' : {}, 'ND' : {}}
-CLASSES = getPaths(sys.argv[1])
-train(CLASSES)
-json.dump(database,open('nbmodel.txt', 'w'))
+# Get the list of stopWords
+getStopWords()
+# Dealing with only two types of classes here.
+database = {'Positive' : {}, 'Negative' : {}}
+# File name to read all the data. Only one file this time.
+fname    = sys.argv[1]
+train(fname)
+# Dumping dictionary in nbmodel.txt
+json.dump(database, open('nbmodel.txt', 'w'))

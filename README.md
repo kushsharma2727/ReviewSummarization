@@ -10,6 +10,7 @@ Sequence of Project Activities
 
 ===============================================================================
 DATA EXTRACTION AND FILTERING
+
 Yelp business data in English is used as base data.
 
 Data Location:
@@ -27,6 +28,7 @@ c. CountRestaurants.py
 
 ===============================================================================
 TOPIC ANALYSIS and MAPPING
+
 LDA technique is used to identify topics from reviews. These identified topics
 are then mapped to aspects of our interest. These aspects are shorlisted via
 internet research.
@@ -44,6 +46,7 @@ Main/LDA/
 
 ===============================================================================
 SENTIMENT ANALYSIS
+
 1. Bayes Classifier
 For each topic identified we run sentiment analysis on them classifying each
 sentence as positive and negative. This classification will help user get both
@@ -54,6 +57,7 @@ Main/Classifier/
 
 ===============================================================================
 SUMMARIZATION
+
 Once data is classified into sentiments for each aspect and for each restaurant
 we are now ready to run summarization on it.
 
@@ -62,6 +66,7 @@ TODO
 
 ===============================================================================
 DISPLAYING RESULTS
+
 The above result will be displayed via web interface dialog box. This box
 provides a selection of restaurant and the feature user is interested in. Once,
 this selection is made we display the summary of reviews for each sentiment on

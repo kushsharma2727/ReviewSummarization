@@ -2,14 +2,11 @@
 Aspect Based Review Summarization
  
 Sequence of Project Activities
+
 0. Data Extraction and Filtering
-
 1. Topic Analysis and Mapping
-
 2. Sentiment Analysis
-
 3. Summarization
-
 4. Displaying Result
 
 ===============================================================================

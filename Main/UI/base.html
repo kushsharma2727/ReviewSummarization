@@ -1,0 +1,100 @@
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Loading Bootstrap -->
+   
+    <title>Get Reviews!</title>
+    <style type="text/css">
+		h1 {text-align: center}
+	</style>
+	<script>
+		function display() {
+			var read = new XMLHttpRequest();
+			var e = document.getElementById("restaurant");
+			var a = document.getElementById("aspect");
+			var n=document.getElementById("restaurant").options[e.selectedIndex].value+document.getElementById("aspect").options[a.selectedIndex].value+'p';
+			var name=n+'.txt';
+			read.open('GET', name, false);
+			read.send();
+			
+			document.getElementById("result").innerHTML = "Positive Reviews:"+"<br/>";
+			var displayName = read.responseText
+			document.getElementById("result").innerHTML += displayName+"<br/>"+"<br/>";
+			
+			var read2 = new XMLHttpRequest();
+			var n2=document.getElementById("restaurant").options[e.selectedIndex].value+document.getElementById("aspect").options[a.selectedIndex].value+'n';
+			var name2=n2+'.txt';
+			read2.open('GET', name2, false);
+			read2.send()
+			
+			document.getElementById("result").innerHTML += "Negative Reviews"+"<br/>";
+			var displayName2 = read2.responseText
+			document.getElementById("result").innerHTML += displayName2+"<br/>";
+			
+			
+			
+			
+        
+		}
+		</script>
+	
+</head>
+
+<body>
+	<div class="container">	
+		<h1>Aspect Based Reviews</h1>
+		<div class="col-lg-12">
+		
+			
+
+				<form action="{{ url_for('index')}}" method="post">
+	    			<div class="input-group">
+					<div class="row">
+						<h2>Choose an aspect:</h2>
+					</div>
+		      			<select id="aspect">
+							<option></option>
+							<option value="a1">Food</option>
+							<option value="a2">Ambience</option>
+							<option value="a3">Service</option>
+						</select>
+					<div class="row">
+						<h2>Choose a Restaurant:</h2>
+					</div>
+		      			<select id="restaurant">
+							<option></option>
+							<option value="r1">Bluewater Grill</option>
+							<option value="r2">Diego Mexican Cuisine</option>
+							<option value="r3">Jasmine Tokyo</option>
+							<option value="r4">Eggstasy</option>
+						</select>
+					
+					<br/><br/>
+
+		      			<span class="input-group-btn">
+		        			<input class="btn btn-default" type="button" onclick="display()" value="Go!"/>
+		      			</span>
+	    			</div><!-- /input-group -->
+    			</form>
+
+  			
+  			<div class="row">
+
+				<h2>Result:</h2>
+				<div id="result">
+				</div>
+			</div>
+			
+  		</div>
+	</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+
+</body>
+
+
+
+</html>

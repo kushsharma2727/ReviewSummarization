@@ -53,6 +53,10 @@ For each topic identified we run sentiment analysis on them classifying each
 sentence as positive and negative. This classification will help user get both
 the point of opinion on restaurant of choice.
 
+2. Doc to Vec
+Provides a data vector model on which we apply logistic regression for
+classification.
+
 Code Location:
 Main/Classifier/
 
@@ -74,6 +78,6 @@ this selection is made we display the summary of reviews for each sentiment on
 this web interface.
 
 Code Location:
-TODO
+Main/UI/
 
 ===============================================================================
